@@ -2,14 +2,28 @@
 <idea-plugin>
     <id>com.github.hidanio.schemagator</id>
     <name>Schemagator</name>
-    <vendor>hidanio</vendor>
+    <vendor>Richardas Kuchinskas</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
+    <depends>com.intellij.modules.json</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
+
+<!--    <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.hidanio.schemagator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.hidanio.schemagator.startup.MyProjectActivity" />
+        <JavaScript.JsonSchema.ProviderFactory
+                implementation="com.github.hidanio.schemagator.providers.ProjectSchemaProviderFactory"/>
+    </extensions>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor
+                implementation="com.github.hidanio.schemagator.providers.JsonRefContributor" language="JSON"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory
+                implementation="com.github.hidanio.schemagator.providers.ProjectSchemaProviderFactory"/>
     </extensions>
 </idea-plugin>
