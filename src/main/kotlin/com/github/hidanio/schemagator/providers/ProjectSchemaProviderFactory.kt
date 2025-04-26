@@ -24,7 +24,7 @@ private class ProjectSchemaProvider(
     private val SCHEMA_DECL_REGEX =
         Regex("\"\\\$schema\"\\s*:\\s*\"([^\"]+)\"")
 
-    // --------- основные сведения о схеме ----------
+    // --------- general schema ----------
     override fun getName() =
         "Project JSON Schema («${schemaFile.parent?.name ?: "root"}»)"
 
