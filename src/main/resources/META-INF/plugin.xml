@@ -9,7 +9,12 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
     <depends>com.intellij.modules.json</depends>
 
-
+    <description>
+        After the Zalando plugin stopped updating, the idea of this plugin was conceived. The main is adding support for
+        json schema. IDE can not support files navigation in 'cp1251' (because Jetbrains used 'jackson').
+        You can convert files to utf-8, but in not simple cases it can be broke too.
+        This plugin fixed any issues with reference navigation in json schema :)
+    </description>
 <!--    <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.hidanio.schemagator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.hidanio.schemagator.startup.MyProjectActivity" />
