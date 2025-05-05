@@ -2,14 +2,33 @@
 <idea-plugin>
     <id>com.github.hidanio.schemagator</id>
     <name>Schemagator</name>
-    <vendor>hidanio</vendor>
+    <vendor>Richardas Kuchinskas</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
+    <depends>com.intellij.modules.json</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
+    <description>
+        After the Zalando plugin stopped updating, the idea of this plugin was conceived. The main is adding support for
+        json schema. IDE can not support files navigation in 'cp1251' (because Jetbrains used 'jackson').
+        You can convert files to utf-8, but in not simple cases it can be broke too.
+        This plugin fixed any issues with reference navigation in json schema :)
+    </description>
+<!--    <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.hidanio.schemagator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.hidanio.schemagator.startup.MyProjectActivity" />
+        <JavaScript.JsonSchema.ProviderFactory
+                implementation="com.github.hidanio.schemagator.providers.ProjectSchemaProviderFactory"/>
+    </extensions>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor
+                implementation="com.github.hidanio.schemagator.providers.JsonRefContributor" language="JSON"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory
+                implementation="com.github.hidanio.schemagator.providers.ProjectSchemaProviderFactory"/>
     </extensions>
 </idea-plugin>
