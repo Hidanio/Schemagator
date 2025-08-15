@@ -8,6 +8,7 @@ import com.jetbrains.jsonSchema.extension.JsonSchemaFileProvider
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 import com.jetbrains.jsonSchema.extension.SchemaType
 import java.nio.charset.StandardCharsets
+import kotlin.math.max
 
 class ProjectSchemaProviderFactory : JsonSchemaProviderFactory {
     override fun getProviders(project: Project): List<JsonSchemaFileProvider> {
@@ -21,36 +22,37 @@ class ProjectSchemaProviderFactory : JsonSchemaProviderFactory {
 private class ProjectSchemaProvider(
     private val schemaFile: VirtualFile
 ) : JsonSchemaFileProvider {
-    private val SCHEMA_DECL_REGEX =
-        Regex("\"\\\$schema\"\\s*:\\s*\"([^\"]+)\"")
 
-    // --------- general schema ----------
-    override fun getName() =
+    private val schemaDeclRegex = Regex("\"\\\$schema\"\\s*:\\s*\"([^\"]+)\"")
+
+    override fun getName(): String =
         "Project JSON Schema («${schemaFile.parent?.name ?: "root"}»)"
 
     override fun getSchemaFile(): VirtualFile = schemaFile
 
     override fun getSchemaType(): SchemaType = SchemaType.userSchema
 
-    // --------- general: which files we should check ----------
     override fun isAvailable(file: VirtualFile): Boolean {
-        // 1) file should be schema
+        // 1) schema should be always available
         if (file == schemaFile) return true
 
         // 2) only .json
-        if (file.extension != "json") return false
+        if (!"json".equals(file.extension, ignoreCase = true)) return false
 
-        // 3) checking first bytes "$schema": "…"
-        val bytes = ByteArray(4096)
-        val len = file.inputStream.use { it.read(bytes) }
-        val text = String(bytes, 0, maxOf(len, 0), StandardCharsets.UTF_8)
+        // 3) first  ~4КB and find "$schema":"…"
+        val prefixBytes = ByteArray(4096)
+        val len = try {
+            file.inputStream.use { it.read(prefixBytes) }
+        } catch (_: Throwable) {
+            -1
+        }
+        if (len <= 0) return false
+        val text = String(prefixBytes, 0, max(len, 0), StandardCharsets.UTF_8)
 
-        // raw RegExp:   "$schema"  :  "relative/path/schema.json"
-        val regex = SCHEMA_DECL_REGEX
-        val match = regex.find(text) ?: return false
-        val declaredPath = match.groupValues[1]
+        val match = schemaDeclRegex.find(text) ?: return false
+        val declaredPath = match.groupValues[1] // right from "$schema": "..."
 
-        // 4) resolve path and checking with schema
+        // 4) resolve relative path from file location
         val resolved = file.parent?.findFileByRelativePath(declaredPath)
         return resolved == schemaFile
     }
