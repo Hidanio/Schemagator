@@ -5,6 +5,7 @@
     <vendor>Richardas Kuchinskas</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
     <depends>com.intellij.modules.json</depends>
@@ -15,16 +16,23 @@
         You can convert files to utf-8, but in not simple cases it can be broke too.
         This plugin fixed any issues with reference navigation in json schema :)
     </description>
-<!--    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.hidanio.schemagator.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.hidanio.schemagator.startup.MyProjectActivity" />
-        <JavaScript.JsonSchema.ProviderFactory
-                implementation="com.github.hidanio.schemagator.providers.ProjectSchemaProviderFactory"/>
-    </extensions>-->
+
 
     <extensions defaultExtensionNs="com.intellij">
         <psi.referenceContributor
                 implementation="com.github.hidanio.schemagator.providers.JsonRefContributor" language="JSON"/>
+
+        <localInspection language="JSON"
+                         shortName="SchemagatorJsonRefResolver"
+                         groupPath="JSON"
+                         enabledByDefault="true"
+                         implementationClass="com.github.hidanio.schemagator.inspections.JsonRefUnresolvedInspection"
+                         key="inspection.schemagator.json.ref.resolver.display.name"/>
+
+        <lang.inspectionSuppressor
+                language="JSON"
+                implementationClass="com.github.hidanio.schemagator.inspections.JsonSchemaRefSuppressor"/>
+
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
