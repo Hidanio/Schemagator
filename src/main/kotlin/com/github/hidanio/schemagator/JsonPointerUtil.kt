@@ -91,7 +91,7 @@ object JsonPointerUtil {
     private val SCHEMA_DECL_REGEX = Regex("\"\\\$schema\"\\s*:\\s*\"([^\"]+)\"")
 
     /** Our file mapping predicate: "file declares ../schema.json near itself" */
-    fun fileDeclaresProjectSchema(file: VirtualFile, project: Project): Boolean {
+    fun fileDeclaresProjectSchema(file: VirtualFile): Boolean {
         if (!file.extension.equals("json", true)) return false
         val buf = ByteArray(4096)
         val len = try {
