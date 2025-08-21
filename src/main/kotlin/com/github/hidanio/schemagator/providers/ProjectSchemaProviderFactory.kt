@@ -30,6 +30,13 @@ private class ProjectSchemaProvider(
     override fun getSchemaType(): SchemaType = SchemaType.userSchema
 
     override fun isAvailable(file: VirtualFile): Boolean {
-        return JsonPointerUtil.fileDeclaresProjectSchema(file)
+        // Always available
+        if (file == schemaFile) return true
+
+        // Only .json
+        if (!"json".equals(file.extension, ignoreCase = true)) return false
+
+        // Apply only for files that resolved only this schemaFile
+        return JsonPointerUtil.resolvesToGivenSchema(file, schemaFile)
     }
 }

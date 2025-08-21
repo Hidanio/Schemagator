@@ -110,4 +110,26 @@ object JsonPointerUtil {
     /** PSI loader for VirtualFile. */
     fun psiFile(project: Project, vFile: VirtualFile?): PsiFile? =
         vFile?.let { PsiManager.getInstance(project).findFile(it) }
+
+    fun findDeclaredSchemaPathQuick(file: VirtualFile): String? {
+        if (!file.extension.equals("json", true)) return null
+        val buf = ByteArray(4096)
+        val len = try {
+            file.inputStream.use { it.read(buf) }
+        } catch (_: Throwable) {
+            -1
+        }
+        if (len <= 0) return null
+        val text = String(buf, 0, max(len, 0), StandardCharsets.UTF_8)
+        val m = SCHEMA_DECL_REGEX.find(text) ?: return null
+        return m.groupValues[1]
+    }
+
+    /** Checks that the $schema file actually resolves to the given schemaFile (and is not just called "schema.json") */
+    fun resolvesToGivenSchema(file: VirtualFile, schemaFile: VirtualFile): Boolean {
+        val declared = findDeclaredSchemaPathQuick(file) ?: return false
+        val resolved = file.parent?.findFileByRelativePath(declared) ?: return false
+        // In most cases, VirtualFile will match the link; just in case, let's compare the paths:
+        return resolved == schemaFile || resolved.path == schemaFile.path
+    }
 }
