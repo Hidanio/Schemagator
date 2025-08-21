@@ -8,8 +8,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.jetbrains.jsonSchema.extension.JsonSchemaFileProvider
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 import com.jetbrains.jsonSchema.extension.SchemaType
-import java.nio.charset.StandardCharsets
-import kotlin.math.max
 
 class ProjectSchemaProviderFactory : JsonSchemaProviderFactory {
     override fun getProviders(project: Project): List<JsonSchemaFileProvider> {
