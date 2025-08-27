@@ -9,6 +9,8 @@ import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import kotlinx.serialization.cbor.CborTag.URI
+import java.net.URI
 import java.nio.charset.StandardCharsets
 import kotlin.math.max
 
@@ -131,5 +133,15 @@ object JsonPointerUtil {
         val resolved = file.parent?.findFileByRelativePath(declared) ?: return false
         // In most cases, VirtualFile will match the link; just in case, let's compare the paths:
         return resolved == schemaFile || resolved.path == schemaFile.path
+    }
+
+    fun isAbsoluteUri(path: String?): Boolean {
+        if (path.isNullOrBlank()) return false
+        return try {
+            val u = URI(path)
+            u.isAbsolute
+        } catch (_: Throwable) {
+            false
+        }
     }
 }

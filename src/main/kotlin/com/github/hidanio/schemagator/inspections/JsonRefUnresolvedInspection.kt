@@ -26,6 +26,10 @@ class JsonRefUnresolvedInspection : LocalInspectionTool() {
                 val raw = lit.text.substring(valueRange.startOffset, valueRange.endOffset)
                 val parts = JsonPointerUtil.splitRef(raw) ?: return
 
+                if (JsonPointerUtil.isAbsoluteUri(parts.path)) {
+                    return
+                }
+
                 val vFile = JsonPointerUtil.resolveFile(lit, parts.path)
                 if (vFile == null) {
                     // broken file path highlight
