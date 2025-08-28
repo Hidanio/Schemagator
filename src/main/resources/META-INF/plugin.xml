@@ -11,10 +11,8 @@
     <depends>com.intellij.modules.json</depends>
 
     <description>
-        After the Zalando plugin stopped updating, the idea of this plugin was conceived. The main is adding support for
-        json schema. IDE can not support files navigation in 'cp1251' (because Jetbrains used 'jackson').
-        You can convert files to utf-8, but in not simple cases it can be broke too.
-        This plugin fixed any issues with reference navigation in json schema :)
+        This plugin can solve the problem with JSON-schemas: Jetbrains IDE sometimes can not work with windows-1251 encodings and converting files to UTF-8 does not guarantee that it will work correct in a lot of cases (Jetbrains used old java converter(Jackson))
+        This plugin fixed all issues with custom Json schemas.
     </description>
 
 
